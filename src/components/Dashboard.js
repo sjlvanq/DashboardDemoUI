@@ -7,11 +7,23 @@ import PanelTurnos from './PanelTurnos';
 import PanelVentasRegistro from './PanelVentasRegistro';
 import PanelVentasHistorial from './PanelVentasHistorial';
 
-const Dashboard = () => {
+const Dashboard = (hierarchyLevel) => {
   const { token } = useAuth();
+  console.log(hierarchyLevel.hierarchyLevel);
   //console.log("Token en Dashboard:", token);
-  return <>	  <p><a href="/">Salir</a></p>
-<PanelPersonal /><PanelMesas /><PanelTurnos /><PanelVentasRegistro /><PanelVentasHistorial /></>;
+  return (
+	<div>
+	<p><a href="/">Salir</a></p>
+	{hierarchyLevel.hierarchyLevel <= 1 && <PanelPersonal />}
+	{hierarchyLevel.hierarchyLevel ===0 && <PanelVentasHistorial />} 
+	{hierarchyLevel.hierarchyLevel ===1 && <><PanelMesas /><PanelTurnos /></>} 
+	{hierarchyLevel.hierarchyLevel ===2 && <PanelVentasRegistro />}
+	</div>
+  );
 };
 
 export default Dashboard;
+
+/*
+
+*/

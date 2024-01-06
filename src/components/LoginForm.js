@@ -19,7 +19,7 @@ const LoginForm = ({ onLoginSuccess }) => {
     setErrors({});
     try {
       const response = await loginUser(credentials);
-      onLoginSuccess(response.token);
+      onLoginSuccess(response.token, response.hierarchyLevel);
     } catch (error) {
       if (error.errors) {
         setErrors(error.errors);
