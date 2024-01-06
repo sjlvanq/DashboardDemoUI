@@ -32,8 +32,8 @@ const LoginForm = ({ onLoginSuccess }) => {
   return (
     <form onSubmit={handleSubmit} style={{display:'flex',flexDirection:'column',alignItems:'center'}}>
 	<div>
-	  <div style={{display:"flex", flexDirection:'row' }}>
         {errors.error && <ErrorMessages errors={errors.error} />}
+	  <div style={{display:"flex", flexDirection:'row' }}>
 		<label htmlFor="userName" style={{ width:'7em'}}>Usuario:</label>
         <input
           type="text"
@@ -43,8 +43,8 @@ const LoginForm = ({ onLoginSuccess }) => {
           onChange={handleInputChange}
 		  autoComplete="username"
         />
-        {errors.UserName && <ErrorMessages errors={errors.UserName} />}
       </div>
+        {errors.UserName && <ErrorMessages errors={errors.UserName} />}
       <div style={{display:"flex", flexDirection:'row' }}>
         <label htmlFor="password" style={{ width:'7em'}}>Clave:</label>
         <input 
@@ -55,8 +55,8 @@ const LoginForm = ({ onLoginSuccess }) => {
           onChange={handleInputChange}
 		  autoComplete="current-password"
         />
-        {errors.Password && <ErrorMessages errors={errors.Password} />}
       </div>
+        {errors.Password && <ErrorMessages errors={errors.Password} />}
 	  <div style={{marginTop:'5px'}}>
       <button type="submit" style={{width:'100%'}}>Iniciar sesión</button>
 	  </div>
