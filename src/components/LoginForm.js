@@ -30,10 +30,11 @@ const LoginForm = ({ onLoginSuccess }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="pure-form">
-      <div>
+    <form onSubmit={handleSubmit} style={{display:'flex',flexDirection:'column',alignItems:'center'}}>
+	<div>
+	  <div style={{display:"flex", flexDirection:'row' }}>
         {errors.error && <ErrorMessages errors={errors.error} />}
-        <label htmlFor="userName">Usuario:
+		<label htmlFor="userName" style={{ width:'7em'}}>Usuario:</label>
         <input
           type="text"
           id="userName"
@@ -42,12 +43,11 @@ const LoginForm = ({ onLoginSuccess }) => {
           onChange={handleInputChange}
 		  autoComplete="username"
         />
-		</label>
         {errors.UserName && <ErrorMessages errors={errors.UserName} />}
       </div>
-      <div>
-        <label htmlFor="password">Contraseña:
-        <input
+      <div style={{display:"flex", flexDirection:'row' }}>
+        <label htmlFor="password" style={{ width:'7em'}}>Clave:</label>
+        <input 
           type="password"
           id="password"
           name="password"
@@ -55,10 +55,12 @@ const LoginForm = ({ onLoginSuccess }) => {
           onChange={handleInputChange}
 		  autoComplete="current-password"
         />
-		</label>
         {errors.Password && <ErrorMessages errors={errors.Password} />}
       </div>
-      <button type="submit">Iniciar sesión</button>
+	  <div style={{marginTop:'5px'}}>
+      <button type="submit" style={{width:'100%'}}>Iniciar sesión</button>
+	  </div>
+	</div>
     </form>
   );
 };
