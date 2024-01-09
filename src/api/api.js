@@ -1,227 +1,222 @@
-// api.js
-import { useAuth } from '../context/AuthContext';
+import {
+    useAuth
+} from '../context/AuthContext';
 
 const API_BASE_URL = 'http://localhost:5270/api';
 
 const handleResponse = async (response) => {
-  if (!response.ok) {
-    const error = await response.json();
-    throw error;
-  }
-  return response.json();
+    if (!response.ok) {
+        const error = await response.json();
+        throw error;
+    }
+    return response.json();
+};
+
+const configureHeaders = (token) => ({
+    'Authorization': `Bearer ${token}`,
+    'Content-Type': 'application/json',
+});
+
+const buildUrl = (endpoint) => `${API_BASE_URL}/${endpoint}`;
+
+const request = async (url, options) => {
+    const response = await fetch(url, options);
+    return handleResponse(response);
 };
 
 const useApi = () => {
-  const { token } = useAuth();
+    const {
+        token
+    } = useAuth();
 
-  const loginUser = async (credentials) => {
-    const response = await fetch(`${API_BASE_URL}/Tokens/login`, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(credentials),
-    });
+    const loginUser = async (credentials) => {
+        const url = buildUrl('Tokens/login');
+        const options = {
+            method: 'POST',
+            headers: configureHeaders(token),
+            body: JSON.stringify(credentials),
+        };
+        return request(url, options);
+    };
 
-    return handleResponse(response);
-  };
+    const getRolesInferiores = async () => {
+        const url = buildUrl('Roles/inferiores');
+        const options = {
+            headers: configureHeaders(token),
+        };
+        return await request(url, options);
+    };
 
-  const getRolesInferiores = async () => {
-    const response = await fetch(`${API_BASE_URL}/Roles/inferiores`, {
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-    });
-    return handleResponse(response);
-  };
+    const getMesas = async () => {
+        const url = buildUrl('Mesas');
+        const options = {
+            headers: configureHeaders(token),
+        };
+        return await request(url, options);
+    };
 
-  const getMesas = async () => {
-    const response = await fetch(`${API_BASE_URL}/Mesas`, {
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-    });
-    return handleResponse(response);
-  };
+    const createMesa = async (mesa) => {
+        const url = buildUrl('Mesas');
+        const options = {
+            method: 'POST',
+            headers: configureHeaders(token),
+            body: JSON.stringify(mesa),
+        };
+        return await request(url, options);
+    };
 
-  const createMesa = async (mesa) => {
-    const response = await fetch(`${API_BASE_URL}/Mesas`, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(mesa),
-    });
-	return handleResponse(response);
-  }
+    const getTurnos = async () => {
+        const url = buildUrl('Turnos');
+        const options = {
+            headers: configureHeaders(token),
+        };
+        return await request(url, options);
+    };
 
-  const getTurnos = async () => {
-    const response = await fetch(`${API_BASE_URL}/Turnos`, {
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-    });
-    return handleResponse(response);
-  };
+    const getTurnoMesas = async (idTurno) => {
+        const url = buildUrl(`Turnos/mesas/${idTurno}`);
+        const options = {
+            headers: configureHeaders(token),
+        };
+        return await request(url, options);
+    };
 
-  const getTurnoMesas = async (idTurno) => {
-  const response = await fetch(`${API_BASE_URL}/Turnos/mesas/${idTurno}`, {
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-    });
-    return handleResponse(response);
-  };
-  
-  const getTurnoMesasNoAsignadas = async (idTurno) => {
-  const response = await fetch(`${API_BASE_URL}/Turnos/mesas-no-asignadas/${idTurno}`, {
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-    });
-    return handleResponse(response);
-  };
+    const getTurnoMesasNoAsignadas = async (idTurno) => {
+        const url = buildUrl(`Turnos/mesas-no-asignadas/${idTurno}`);
+        const options = {
+            headers: configureHeaders(token),
+        };
+        return await request(url, options);
+    };
 
-  const createTurno = async (turno) => {
-    const response = await fetch(`${API_BASE_URL}/Turnos`, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(turno),
-    });
-    return handleResponse(response);
-  };
+    const createTurno = async (turno) => {
+        const url = buildUrl('Turnos');
+        const options = {
+            method: 'POST',
+            headers: configureHeaders(token),
+            body: JSON.stringify(turno),
+        };
+        return await request(url, options);
+    };
 
-  const updateTurnoSetMozo = async (asignacion) => {
-	  const response = await fetch(`${API_BASE_URL}/Turnos/asignar-mozo`, {
-		  method: 'PUT',
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(asignacion),
-    });
-    return handleResponse(response);
-  };
+    const updateTurnoSetMozo = async (asignacion) => {
+        const url = buildUrl('Turnos/asignar-mozo');
+        const options = {
+            method: 'PUT',
+            headers: configureHeaders(token),
+            body: JSON.stringify(asignacion),
+        };
+        return await request(url, options);
+    };
 
-  const updateTurnoAddMesa = async (asignacion) => {
-	  const response = await fetch(`${API_BASE_URL}/Turnos/asignar-mesa`, {
-		  method: 'PUT',
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(asignacion),
-    });
-    return handleResponse(response);
-  };
+    const updateTurnoAddMesa = async (asignacion) => {
+        const url = buildUrl('Turnos/asignar-mesa');
+        const options = {
+            method: 'PUT',
+            headers: configureHeaders(token),
+            body: JSON.stringify(asignacion),
+        };
+        return await request(url, options);
+    };
 
-  const deleteTurno = async (turno) => {return false;};
+    const deleteTurno = async (turno) => {
+        return false;
+    };
 
-  const deleteMesa = async (mesaId) => {
-	const response = await fetch(`${API_BASE_URL}/Mesas/${mesaId}`, {
-		method: 'DELETE',
-		headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-    });
-    return handleResponse(response);
-  };
+    const deleteMesa = async (mesaId) => {
+        const url = buildUrl(`Mesas/${mesaId}`);
+        const options = {
+            method: 'DELETE',
+            headers: configureHeaders(token),
+        };
+        return await request(url, options);
+    };
 
-  const getPersonalByRole = async (roleName) => {
-    const response = await fetch(`${API_BASE_URL}/Personal/${roleName}`, {
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-    });
-    return handleResponse(response);
-  };
+    const getPersonalByRole = async (roleName) => {
+        const url = buildUrl(`Personal/${roleName}`);
+        const options = {
+            headers: configureHeaders(token),
+        };
+        return await request(url, options);
+    };
 
-  const createPersonal = async (personal) => {
-    const response = await fetch(`${API_BASE_URL}/Personal`, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(personal),
-    });
+    const createPersonal = async (personal) => {
+        const url = buildUrl('Personal');
+        const options = {
+            method: 'POST',
+            headers: configureHeaders(token),
+            body: JSON.stringify(personal),
+        };
+        return await request(url, options);
+    };
 
-    return handleResponse(response);
-  };
-  
-  const deletePersonal = async (personalId) => {
-	const response = await fetch(`${API_BASE_URL}/Personal/${personalId}`, {
-		method: 'DELETE',
-		headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-    });
-    return handleResponse(response);
-  };
+    const deletePersonal = async (personalId) => {
+        const url = buildUrl(`Personal/${personalId}`);
+        const options = {
+            method: 'DELETE',
+            headers: configureHeaders(token),
+        };
+        return await request(url, options);
+    };
 
-  const createVenta = async (venta) => {
-    const response = await fetch(`${API_BASE_URL}/Ventas`, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(venta),
-    });
-    return handleResponse(response);
-  };
+    const createVenta = async (venta) => {
+        const url = buildUrl('Ventas');
+        const options = {
+            method: 'POST',
+            headers: configureHeaders(token),
+            body: JSON.stringify(venta),
+        };
+        return await request(url, options);
+    };
 
-  const getVentaMesas = async () => {
-    const response = await fetch(`${API_BASE_URL}/Ventas/mesas`, {
-      method: 'GET',
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      }});
-    return handleResponse(response);
-  };
-  
-  const getVentasConFiltro = async (venta) => {
-    const response = await fetch(`${API_BASE_URL}/Ventas/historial`, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(venta),
-    });
-    return handleResponse(response);
-  };
+    const getVentaMesas = async () => {
+        const url = buildUrl('Ventas/mesas');
+        const options = {
+            method: 'GET',
+            headers: configureHeaders(token),
+        };
+        return await request(url, options);
+    };
 
-  const getPrueba = async () => {
-    const response = await fetch(`${API_BASE_URL}/Prueba`, {
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-    });
-    return handleResponse(response);
-  };
+    const getVentasConFiltro = async (venta) => {
+        const url = buildUrl('Ventas/historial');
+        const options = {
+            method: 'POST',
+            headers: configureHeaders(token),
+            body: JSON.stringify(venta),
+        };
+        return await request(url, options);
+    };
 
-  return { getPrueba, loginUser, 
-  getRolesInferiores, getPersonalByRole, createPersonal, deletePersonal, 
-  getMesas, createMesa, deleteMesa,
-  createVenta, getVentaMesas, getVentasConFiltro,
-  getTurnos, getTurnoMesas, getTurnoMesasNoAsignadas, createTurno, deleteTurno, updateTurnoSetMozo, updateTurnoAddMesa
-  }
+    const getPrueba = async () => {
+        const url = buildUrl('Prueba');
+        const options = {
+            headers: configureHeaders(token),
+        };
+        return await request(url, options);
+    };
+
+    return {
+        getPrueba,
+        loginUser,
+        getRolesInferiores,
+        getPersonalByRole,
+        createPersonal,
+        deletePersonal,
+        getMesas,
+        createMesa,
+        deleteMesa,
+        createVenta,
+        getVentaMesas,
+        getVentasConFiltro,
+        getTurnos,
+        getTurnoMesas,
+        getTurnoMesasNoAsignadas,
+        createTurno,
+        deleteTurno,
+        updateTurnoSetMozo,
+        updateTurnoAddMesa
+    }
 };
 
 export default useApi;
