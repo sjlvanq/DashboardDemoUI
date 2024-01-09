@@ -41,16 +41,24 @@ const PanelTurnos = () => {
     }, []);
 
     useEffect(() => {
+		("useEffect [listaTurnos, selectedTurno]");
+		("selectedMesa es:", selectedMesa)
 		if (!selectedTurno && listaTurnos.length > 0) {
 			setSelectedTurno(listaTurnos[0].turnoId);
             setMesaEnAsignacionDeMozo({ turnoId: listaTurnos[0].turnoId, mesaId: null, mozoDni: null });
 			getTurnoMesas(listaTurnos[0].turnoId)
-				.then(async (data) => setListaTurnoMesas(data))
+				.then(async (data) => {
+					("useEffect [listaTurnos, selectedTurno]. getTurnoMesas devuelve: ");
+					(data);
+					setListaTurnoMesas(data)
+				})
 				.catch((error) => {
 					setErrors({ 'error': 'Error al obtener turnos' });
 				})
-				.finally(() => setIsLoading((prevObj) => ({ ...prevObj, asignaciones: false })));
-			getTurnoMesasNoAsignadas(listaTurnos[0].turnoId)
+				.finally(() => {
+					("useEffect [listaTurnos, selectedTurno]. Finally");
+				setIsLoading((prevObj) => ({ ...prevObj, asignaciones: false }))});
+				getTurnoMesasNoAsignadas(listaTurnos[0].turnoId)
 				.then(async (data) => setListaTurnoMesasNoAsignadas(data))
 				.catch((error) => {
 					setErrors({ 'error': 'Error al obtener mesas no asignadas' });
@@ -64,13 +72,29 @@ const PanelTurnos = () => {
         }
     }, [listaMozos]);
 
+    useEffect(() => {
+		("useEffect de selectedMesa");
+    }, [selectedMesa]);
+	
+	useEffect(() => {
+		("useEffect de listaTurnoMesasNoAsignadas");
+		(listaTurnoMesasNoAsignadas);
+		(selectedMesa);
+        ("useEffect de listaTurnoMesasNoAsignadas");
+		if (listaTurnoMesasNoAsignadas.length > 0) {
+			("useEffect de listaTurnoMesasNoAsignadas. Aquí se debería asignar")
+		    ("Con el valor:",listaTurnoMesasNoAsignadas[0].mesaId);
+			("porque listaTurnoMesasNoAsignadas es",listaTurnoMesasNoAsignadas); 
+			setSelectedMesa(listaTurnoMesasNoAsignadas[0].mesaId);}
+	}, [listaTurnoMesasNoAsignadas]);
+
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setTurno({ ...turno, [name]: value });
     };
 
     const handleTurnoOptionChange = (e, turnoId) => {
-		console.log("handleTurnoOptionChange");
+		("handleTurnoOptionChange");
         setMesaEnAsignacionDeMozo({ turnoId: turnoId, mesaId: null, mozoDni: null });
         setErrorsAsignaciones({});
         setInfoAsignaciones({});
@@ -79,17 +103,19 @@ const PanelTurnos = () => {
         getTurnoMesas(turnoId)
             .then(async (data) => {
 				setListaTurnoMesas(data); //SetListaTurnoMesas
-				console.log("getTurnoMesas");
-				console.log(data);})
+				("getTurnoMesas");
+				(data);
+				})
             .catch((error) => {
                 setErrors({ 'error': 'Error al obtener turnos' });
             })
             .finally(() => setIsLoading((prevObj) => ({ ...prevObj, asignaciones: false })));
         getTurnoMesasNoAsignadas(turnoId)
             .then(async (data) => {
-				console.log("getTurnoMesasNoAsignadas")
+				("getTurnoMesasNoAsignadas")
+				(data);
                 setListaTurnoMesasNoAsignadas(data);
-                if (data.length > 1) { setSelectedMesa(data[0].idMesa);}
+                if (data.length > 0) { setSelectedMesa(data[0].idMesa);}
             })
             .catch((error) => {
                 setErrorsAsignaciones({ 'error': 'Error al obtener mesas no asignadas del turno' });
@@ -119,6 +145,7 @@ const PanelTurnos = () => {
     };
 
     const handleAsignarMozoAMesa = async () => {
+		("AsignarMozoAMesa");
         //setErrorsAsignaMozo({});
         //setInfoAsignaMozo({});
         try {
@@ -137,6 +164,7 @@ const PanelTurnos = () => {
     };
 
     const handleAsignarMesaATurno = async (e) => {
+		("AsignarMesaATurno");
         setErrorsAsignaciones({});
         setInfoAsignaciones({});
         e.preventDefault();
@@ -157,6 +185,7 @@ const PanelTurnos = () => {
     };
 
     const handleMesaEnAsignacionDeMozo = async (e, mesaId) => {
+		("MesaEnAsignacionDeMozo");
         e.preventDefault();
         setMesaEnAsignacionDeMozo({ ...mesaEnAsignacionDeMozo, mesaId: mesaId })
         //setMesaEnAsignacionDeMozo(mesaId);
@@ -178,6 +207,29 @@ const PanelTurnos = () => {
         setInfoAsignaciones({});
         setMesaEnAsignacionDeMozo({ ...mesaEnAsignacionDeMozo, mozoDni: e.target.value })
     };
+	
+	const handleActualizarMesasYPersonal = async (e) => {
+		e.preventDefault();
+		setIsLoading((prevObj) => ({ ...prevObj, asignaciones: true }));
+		setMesaEnAsignacionDeMozo({ turnoId: listaTurnos[0].turnoId, mesaId: null, mozoDni: null });
+			getTurnoMesas(listaTurnos[0].turnoId)
+				.then(async (data) => {
+					("useEffect [listaTurnos, selectedTurno]. getTurnoMesas devuelve: ");
+					(data);
+					setListaTurnoMesas(data)
+				})
+				.catch((error) => {
+					setErrors({ 'error': 'Error al obtener turnos' });
+				})
+				.finally(() => {
+					("useEffect [listaTurnos, selectedTurno]. Finally");
+				setIsLoading((prevObj) => ({ ...prevObj, asignaciones: false }))});
+				getTurnoMesasNoAsignadas(listaTurnos[0].turnoId)
+				.then(async (data) => setListaTurnoMesasNoAsignadas(data))
+				.catch((error) => {
+					setErrors({ 'error': 'Error al obtener mesas no asignadas' });
+				})
+	}
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -190,7 +242,7 @@ const PanelTurnos = () => {
                 .then((data) => { setListaTurnos(data); })
                 .catch((error) => { setErrors({ 'error': 'Error al intentar obtener listado de turnos' }) });
         } catch (error) {
-            console.log("catch de error");
+            ("catch de error");
             if (error.errors) {
                 setErrors(error.errors);
             } else {
@@ -202,7 +254,6 @@ const PanelTurnos = () => {
     return (
         <div>
             <h3>Turnos</h3>
-
             {listaTurnos.length > 0 && (
                 <div>
                     {isLoading.turnos ? <p>Cargando...</p> :
@@ -234,6 +285,7 @@ const PanelTurnos = () => {
 							
                                 <>{
                                     isLoading.asignaciones ? <p>Cargando...</p> :
+										<>
                                         <figure>
                                             <table style={{ marginTop: '10px' }}>
                                                 <thead><tr><th style={{ textAlign: 'left' }}>Mesa&nbsp;
@@ -256,7 +308,7 @@ const PanelTurnos = () => {
                                                                     :
                                                                     "-----")}</td>
                                                             <td>{(ms.mozo) ?
-                                                                <a href="/">Desvincular</a>
+																<a href="/" onClick={(e)=>{e.preventDefault();alert("No implementado");}}>Desvincular</a>
                                                                 :
                                                                 (
                                                                     (mesaEnAsignacionDeMozo.mesaId && mesaEnAsignacionDeMozo.mesaId === ms.mesaId) ?
@@ -286,7 +338,9 @@ const PanelTurnos = () => {
                                                 {isAsignandoMesas &&
                                                     <tfoot>
                                                         <tr>
-                                                            <td colSpan={3}>Asignar mesa al turno seleccionado:</td>
+                                                            <td colSpan={3}>Asignar mesa al turno seleccionado:
+															<br /><a style={{fontSize:"9px"}} href="/" onClick={handleActualizarMesasYPersonal}>Actualizar lista de mesas no asignadas</a>
+															</td>
                                                         </tr>
                                                         <tr>
                                                             <td colSpan={1}>
@@ -305,6 +359,7 @@ const PanelTurnos = () => {
                                                     </tfoot>}
                                             </table>
                                         </figure>
+										</>
                                 }</>
                             )}
                         </>
